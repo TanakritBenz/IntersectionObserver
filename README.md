@@ -2,6 +2,6 @@
 
 [Explainer Doc](./explainer.md)
 
-[Draft Spec](https://wicg.github.io/IntersectionObserver/)
+[Draft Spec](https://szager-chromium.github.io/io-v2/)
 
 [Polyfill](./polyfill/)
