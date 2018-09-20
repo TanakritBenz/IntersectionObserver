@@ -49,7 +49,8 @@ function callback(entries) {
 var target = document.getElementById('target');
 var options_dict = {
   thresholds: [0.0, 0.3, 0.7, 1.0],
-  trackVisibility: true
+  trackVisibility: true,
+  delay: 100
 };
 var observer = new IntersectionObserver(callback, options_dict);
 observer.observe(target);
