@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<style>
+html, body {
+  margin: 0;
+  font-size: 36px;
+}
+.svg100 {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  opacity: 0.5;
+}
+.animated {
+  will-change: transform;
+  transition-property: transform;
+  transition-timing-function: linear;
+}
+.target {
+  width: 150px;
+  position: absolute;
+  left: calc(50% - 75px);
+  top: calc(50% - 20px);
+  border: 2px solid black;
+  text-align: center;
+}
+.visible {
+  background-color: green;
+}
+.visible::after {
+  content: "visible";
+}
+.occluded {
+  background-color: red;
+}
+.occluded::after {
+  content: "occluded";
+}
+#button {
+  display:inline-block;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  border: 2px solid black;
+}
+</style>
+
+<div class='target'></div>
+
+<svg viewBox="0 0 100 100" class="animated svg100">
+  <circle cx="50" cy="50" r="49" fill="blue" />
+</svg>
+<svg viewBox="0 0 100 100" class="animated svg100">
+  <circle cx="50" cy="50" r="49" fill="green" />
+</svg>
+<svg viewBox="0 0 100 100" class="animated svg100">
+  <circle cx="50" cy="50" r="49" fill="red" />
+</svg>
+<svg viewBox="0 0 100 100" class="animated svg100">
+  <circle cx="50" cy="50" r="49" fill="yellow" />
+</svg>
+
+<div id='button' onclick='toggle()'>pause</div>
+
+<script>
+let SPEED = 300;
+let RUNNING = false;
+
+function animate(el) {
+  if (!RUNNING)
+    return;
+  let style = getComputedStyle(el);
+  let matrix = style.transform.split('(')[1].split(')')[0].split(', ');
+  let x = Number(matrix[4]);
+  let y = Number(matrix[5]);
+  let width = style.width.replace('px', '');
+  let height = style.height.replace('px', '');
+  let dx = el.hasAttribute('dx') ? Number(el.getAttribute('dx')) : 2;
+  let dy = el.hasAttribute('dy') ? Number(el.getAttribute('dy')) : 1;
+  let maxX = window.innerWidth - width;
+  let maxY = window.innerHeight - height;
+  if (x == maxX)
+    dx = -Math.abs(dx);
+  else if (x == 0)
+    dx = Math.abs(dx);
+  if (y == maxY)
+    dy = -Math.abs(dy);
+  else if (y == 0)
+    dy = Math.abs(dy);
+  let xTicks = dx < 0 ? -x / dx : (maxX - x) / dx;
+  let yTicks = dy < 0 ? -y / dy : (maxY - y) / dy;
+  let finalX, finalY;
+  if (xTicks > yTicks) {
+    finalX = Math.max(0, Math.min(maxX, x + (yTicks * dx)));
+    finalY = dy > 0 ? maxY : 0;
+  } else {
+    finalX = dx > 0 ? maxX : 0;
+    finalY = Math.max(0, Math.min(maxY, y + (xTicks * dy)));
+  }
+  matrix = "matrix(" + [1, 0, 0, 1, finalX, finalY].join(", ") + ")";
+  let distance = Math.sqrt(Math.pow(finalX - x, 2) + Math.pow(finalY - y, 2));
+  el.style.transitionDuration = (distance / SPEED).toPrecision(5) + "s";
+  el.style.transform = matrix;
+  el.setAttribute('dx', dx);
+  el.setAttribute('dy', dy);
+}
+
+function start() {
+  if (RUNNING)
+    return;
+  RUNNING = true;
+  document.querySelectorAll('.animated').forEach((el) => {
+    if (!el.hasAttribute("dx")) {
+      if (el.style.transform == "") {
+        let x = Math.random() * (window.innerWidth - 100);
+        let y = Math.random() * (window.innerWidth - 100);
+        el.style.transform = "matrix(" + [1, 0, 0, 1, x, y].join(", ") + ")";
+      }
+      let dx = (Math.round(Math.random() * 5) + 1) * (Math.random() > 0.5 ? 1 : -1);
+      let dy = (Math.round(Math.random() * 5) + 1) * (Math.random() > 0.5 ? 1 : -1);
+      el.setAttribute("dx", dx);
+      el.setAttribute("dy", dy);
+    }
+  });
+
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.animated').forEach(animate);
+  });
+}
+
+function stop() {
+  RUNNING = false;
+  document.querySelectorAll('.animated').forEach((el) => {
+    if (el.style.transform != "")
+      el.style.transform = getComputedStyle(el).transform;
+  });
+}
+
+function toggle() {
+  if (RUNNING)
+    stop();
+  else
+    start();
+}
+
+document.querySelectorAll('.target').forEach((el) => {
+  new IntersectionObserver((entries) => {
+    let e = entries.pop();
+    if (e.isVisible) {
+      e.target.classList.remove('occluded');
+      e.target.classList.add('visible');
+    } else {
+      e.target.classList.add('occluded');
+      e.target.classList.remove('visible');
+    }
+  }, { trackVisibility: true, delay:100 }).observe(el);
+});
+
+document.querySelectorAll('.animated').forEach((el) => {
+  el.addEventListener('transitionend', (evt) => { animate(evt.target) }, true);
+});
+
+start();
+</script>
