@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<link href=../demo.css rel=stylesheet>
+
+<style>
+#freebeer {
+  position: relative;
+  top: -154px;
+  pointer-events: none;
+  transition: top 1s;
+}
+</style>
+
+<iframe id=cashbomb src=../cashbomb.html></iframe>
+<div class=button id=freebeer></div>
+
+<div id=response></div>
+
+<script>
+(function() {
+  function handleMessage(evt) {
+    let el = document.getElementById('response');
+    if (evt.data['status'] == 'accept') {
+      el.textContent = "Payment received for $" + evt.data['dollars'] + ".";
+    } else {
+      el.textContent = "Payment rejected!";
+    }
+  }
+
+  window.addEventListener('message', handleMessage);
+
+})();
+
+let cashbomb = document.getElementById('cashbomb');
+cashbomb.addEventListener('load', evt => {
+  evt.target.contentWindow.postMessage({
+    requester: "BadGuyz",
+    requestedDollars: 1000000
+  }, "*");
+});
+</script>

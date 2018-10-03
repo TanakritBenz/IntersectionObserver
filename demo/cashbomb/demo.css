@@ -1,0 +1,47 @@
+iframe {
+  border: none;
+}
+.button {
+  border-radius: 30px;
+  border: 2px outset gray;
+  width: 296px;
+  height: 146px;
+}
+#freebeer {
+  background-image: url(img/beer.png);
+  background-color: white;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+#freebeer::after {
+  content: "Free beer!";
+  text-align: center;
+  font-family: sans-serif;
+  font-size: 56px;
+  font-weight: bolder;
+  color: red;
+  animation-name: blink;
+  animation-duration: 1s;
+  animation-timing-function: steps(2);
+  animation-iteration-count: infinite;
+  animation-direction: normal;
+  animation-play-state: running;
+}
+#response {
+  display: inline-block;
+  font-size: 36px;
+  text-align: center;
+  border: 1px solid black;
+}
+@keyframes blink {
+  0% {
+    visibility: visible;
+  }
+  50% {
+    visibility: hidden;
+  }
+}

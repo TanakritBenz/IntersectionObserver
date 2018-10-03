@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<link href=../demo.css rel=stylesheet>
+
+<style>
+.top {
+  width: 800px;
+  padding: 0 10px;
+}
+.banner {
+  font-size: 72px;
+  text-align: center;
+}
+.item-container {
+  display: flex;
+  flex-direction: column;
+  font-size: 36px;
+}
+.item {
+  margin: 10px 0;
+  display: grid;
+  grid-template-columns: 200px 2fr 0.5fr;
+}
+.item > img {
+  width: 200px;
+}
+.item > div {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.item-order {
+  justify-self: end;
+}
+#pay-widget {
+  float: right;
+}
+input {
+  width: 20px;
+  height: 20px;
+}
+</style>
+
+<div class=top>
+  <div class=banner>BUY HAMMER!</div>
+  <div class=item-container>
+    <div class=item>
+      <img src=../img/hammer-1.jpg>
+      <div class=item-label>$5.99 CHEAP!</div>
+      <div class=item-order>
+        <span>BUY! <input price="5.99" class=hammer-buy type=checkbox></input></span>
+      </div>
+    </div>
+    <div class=item>
+      <img src=../img/hammer-2.jpg>
+      <div class=item-label>$8.99 NAIL BEAST!</div>
+      <div class=item-order>
+        <span>BUY! <input price="8.99" class=hammer-buy type=checkbox></input></span>
+      </div>
+    </div>
+    <div class=item>
+      <img src=../img/hammer-3.jpg>
+      <div class=item-label>$6.99 YELLOW!</div>
+      <div class=item-order>
+        <span>BUY! <input price="6.99" class=hammer-buy type=checkbox></input></span>
+      </div>
+    </div>
+  </div>
+  <iframe id=pay-widget src=../cashbomb.html></iframe>
+</div>
+
+<div id=response></div>
+
+<script>
+function updateCashRequest() {
+  let dollars = 0;
+  document.querySelectorAll('.hammer-buy').forEach(el => {
+    if (el.checked)
+      dollars += Number(el.getAttribute('price'));
+  });
+  let w = document.getElementById('pay-widget').contentWindow;
+  w.postMessage({
+    requester: 'BuyHammerz!',
+    requestedDollars: dollars
+  }, '*');
+}
+
+function handleMessage(evt) {
+  let el = document.getElementById('response');
+  if (evt.data['status'] == 'accept') {
+    el.textContent = "Payment received for $" + evt.data['dollars'] + ".";
+  } else {
+    el.textContent = "Payment rejected!";
+  }
+}
+
+document.querySelectorAll('.hammer-buy').forEach(el => {
+  el.addEventListener('change', updateCashRequest)
+});
+
+window.addEventListener('message', handleMessage);
+</script>

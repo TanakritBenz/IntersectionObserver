@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<link href=../demo.css rel=stylesheet>
+
+<style>
+#switcheroo {
+  margin-top: 100px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+#container {
+}
+.container > * {
+  margin: 20px 0 ;
+}
+</style>
+
+<div id=switcheroo>
+  <div id=container>
+    <iframe src=../cashbomb.html id=cashbomb></iframe>
+    <div class=button id=freebeer></div>
+  </div>
+</div>
+
+<div id=response></div>
+
+<script>
+let switcheroo = document.getElementById('switcheroo');
+let movedThisFrame = false;
+
+function setMoved() {
+  movedThisFrame = true;
+  requestAnimationFrame(() => { movedThisFrame = false; });
+}
+
+function handleMouseEnter(event) {
+  if (!movedThisFrame)
+    switcheroo.style.marginTop = "290px";
+}
+
+function handleMouseLeave(event) {
+  if (!movedThisFrame) {
+    switcheroo.style.marginTop = "";
+    setMoved();
+  }
+}
+
+(function() {
+  let freebeer = document.getElementById('freebeer');
+  let cashbomb = document.getElementById('cashbomb');
+  freebeer.addEventListener('mouseenter', handleMouseEnter);
+  cashbomb.addEventListener('mouseleave', handleMouseLeave);
+  cashbomb.addEventListener('load', evt => {
+    evt.target.contentWindow.postMessage({
+      requester: "BadGuyz",
+      requestedDollars: 1000000
+    }, "*");
+  });
+
+  function handleMessage(evt) {
+    let el = document.getElementById('response');
+    if (evt.data['status'] == 'accept') {
+      el.textContent = "Payment received for $" + evt.data['dollars'] + ".";
+    } else {
+      el.textContent = "Payment rejected!";
+    }
+  }
+  window.addEventListener('message', handleMessage);
+
+})();
+</script>

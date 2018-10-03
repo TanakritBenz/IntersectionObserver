@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<head>
+  <meta http-equiv="origin-trial" content="MAGIC_TOKEN">
+</head>
+<style>
+html, body {
+  height: 100%;
+  margin: 0;
+}
+.screen {
+  border-radius: 30px;
+  border: 2px outset gray;
+  min-width: 296px;
+  min-height: 146px;
+  height: calc(100% - 4px);
+}
+#first-screen {
+  text-align: center;
+  background-image: url(img/cashbomb.png);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+#second-screen {
+}
+#second-container {
+  margin: 10px;
+  font-size: 24px;
+}
+#amount, #requester {
+  color: red;
+}
+#accept-screen {
+  color: green;
+  font-size: 24px;
+}
+#reject-screen {
+  color: red;
+  font-size: 24px;
+}
+#accept-screen > div, #reject-screen > div {
+  margin: 10px;
+  text-align: center;
+}
+#second-button-container {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+}
+#yes-button {
+  text-align: center;
+  corner-radius: 10px;
+  margin: 0 5px;
+  background-color: green;
+}
+#no-button {
+  text-align: center;
+  corner-radius: 10px;
+  margin: 0 5px;
+  background-color: red;
+}
+
+</style>
+<div class=screen id=first-screen></div>
+
+<div class=screen id=second-screen style='display:none'>
+  <div id=second-container>
+    Drop a cash bomb for <span id=amount></span> on <span id=requester></span>?
+    <div id=second-button-container>
+      <div id=yes-button>Bombs Away!</div>
+      <div id=no-button>Abort Mission!</div>
+    </div>
+  </div>
+</div>
+
+<div class=screen id=accept-screen style='display:none'>
+  <div>Bomb dropped!</div>
+</div>
+
+<div class=screen id=reject-screen style='display:none'>
+  <div>Mission aborted!</div>
+</div>
+
+<script>
+// Toggle this value to enable/disable IOv2
+var visibilityCheckingEnabled = true;
+
+var requesterWindow;
+var requesterName = "";
+var requestedDollars = 0;
+
+var visibleSince = -1;
+var minimumVisibleTime = 1000;
+
+function hasBeenVisibleLongEnoughToAcceptClick() {
+  return (visibleSince != -1 && performance.now() - visibleSince > minimumVisibleTime)
+}
+
+function handleMessage(event) {
+  requesterWindow = event.source;
+  requesterName = event.data['requester'];
+  requestedDollars = event.data['requestedDollars'];
+}
+
+function handleMoneyRequest(event) {
+  if (visibilityCheckingEnabled && !hasBeenVisibleLongEnoughToAcceptClick()) {
+    rejectMoneyRequest();
+    return;
+  }
+  if (requestedDollars == 0)
+    return;
+  document.getElementById('first-screen').style.display = 'none';
+  document.getElementById('second-screen').style.display = '';
+  document.getElementById('amount').textContent = '$' + String(requestedDollars);
+  document.getElementById('requester').textContent = requesterName;
+}
+
+function acceptMoneyRequest() {
+  if (visibilityCheckingEnabled && !hasBeenVisibleLongEnoughToAcceptClick()) {
+    rejectMoneyRequest();
+    return;
+  }
+  document.getElementById('first-screen').style.display = 'none';
+  document.getElementById('second-screen').style.display = 'none';
+  document.getElementById('reject-screen').style.display = 'none';
+  document.getElementById('accept-screen').style.display = '';
+  requesterWindow.postMessage({
+    status: 'accept',
+    dollars: requestedDollars
+  }, '*');
+}
+
+function rejectMoneyRequest() {
+  document.getElementById('first-screen').style.display = 'none';
+  document.getElementById('second-screen').style.display = 'none';
+  document.getElementById('accept-screen').style.display = 'none';
+  document.getElementById('reject-screen').style.display = '';
+  requesterWindow.postMessage({
+    status: 'reject',
+    dollars: requestedDollars
+  }, '*');
+}
+
+(function() {
+  document.getElementById('first-screen').addEventListener('click', handleMoneyRequest);
+  document.getElementById('yes-button').addEventListener('click', acceptMoneyRequest);
+  document.getElementById('no-button').addEventListener('click', rejectMoneyRequest);
+  window.addEventListener('message', handleMessage);
+
+  function handleObservation(entries) {
+    for (let i = 0; i < entries.length; i++) {
+      if (entries[i].isVisible) {
+        visibleSince = entries[i].time;
+      } else {
+        visibleSince = -1;
+      }
+    }
+  }
+
+  let observer = new IntersectionObserver(handleObservation, {
+    trackVisibility: true,
+    threshold: [1]
+  });
+  observer.observe(document.body);
+})();
+</script>
