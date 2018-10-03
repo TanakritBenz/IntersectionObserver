@@ -35,13 +35,6 @@ html, body {
 .occluded::after {
   content: "occluded";
 }
-#button {
-  display:inline-block;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  border: 2px solid black;
-}
 #forcer {
   color: white;
   position: absolute;
@@ -64,8 +57,18 @@ html, body {
 <svg viewBox="0 0 100 100" class="animated svg100">
   <circle cx="50" cy="50" r="49" fill="yellow" />
 </svg>
-
-<div id='button' onclick='toggle()'>pause</div>
+<svg viewBox="0 0 100 100" class="animated svg100">
+  <circle cx="50" cy="50" r="49" fill="hotpink" />
+</svg>
+<svg viewBox="0 0 100 100" class="animated svg100">
+  <circle cx="50" cy="50" r="49" fill="purple" />
+</svg>
+<svg viewBox="0 0 100 100" class="animated svg100">
+  <circle cx="50" cy="50" r="49" fill="teal" />
+</svg>
+<svg viewBox="0 0 100 100" class="animated svg100">
+  <circle cx="50" cy="50" r="49" fill="turqoise" />
+</svg>
 
 <script>
 let SPEED = 300;
@@ -173,6 +176,15 @@ document.querySelectorAll('.target').forEach((el) => {
 
 document.querySelectorAll('.animated').forEach((el) => {
   el.addEventListener('transitionend', (evt) => { animate(evt.target) }, true);
+});
+
+document.addEventListener('keypress', (event) => {
+  if (event.key == ' ') {
+    if (RUNNING)
+      stop();
+    else
+      start();
+  }
 });
 
 start();
