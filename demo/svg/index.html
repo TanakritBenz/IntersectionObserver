@@ -22,17 +22,15 @@ html, body {
   top: calc(50% - 20px);
   border: 2px solid black;
   text-align: center;
-}
-.visible {
   background-color: green;
 }
-.visible::after {
+.target::after {
   content: "not occluded";
 }
-.occluded {
+.target.occluded {
   background-color: red;
 }
-.occluded::after {
+.target.occluded::after {
   content: "occluded";
 }
 #forcer {
@@ -166,10 +164,8 @@ document.querySelectorAll('.target').forEach((el) => {
     let e = entries.pop();
     if (e.isVisible) {
       e.target.classList.remove('occluded');
-      e.target.classList.add('visible');
     } else {
       e.target.classList.add('occluded');
-      e.target.classList.remove('visible');
     }
   }, { trackVisibility: true, delay:100 }).observe(el);
 });
