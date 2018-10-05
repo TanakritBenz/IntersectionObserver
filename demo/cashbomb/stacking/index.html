@@ -2,23 +2,81 @@
 <link href=../demo.css rel=stylesheet>
 
 <style>
-#freebeer {
-  position: relative;
-  top: -154px;
+#cashbomb {
+  float: right;
+}
+input {
+  width: 20px;
+  height: 20px;
+}
+#freebeer-container {
   pointer-events: none;
-  transition: top 1s;
+  position: relative;
+  left: 480px;
+  transition-property: left;
+  transition-duration: 2s;
+  display: flex;
+}
+#show-hide {
+  color: lightgray;
+  pointer-events: auto;
+  font-size: 36px;
+  align-self: center;
+  margin-left: 10px;
 }
 </style>
 
-<iframe id=cashbomb src=../cashbomb.html></iframe>
-<div class=button id=freebeer></div>
+<div class=top>
+  <div class=banner>BUY HAMMERS!</div>
+  <div class=item-container>
+    <div class=item>
+      <img src=../img/hammer-1.jpg>
+      <div class=item-label>$5.99 CHEAP!</div>
+      <div class=item-order>
+        <span>BUY! <input price="5.99" class=hammer-buy type=checkbox></input></span>
+      </div>
+    </div>
+    <div class=item>
+      <img src=../img/hammer-2.jpg>
+      <div class=item-label>$8.99 NAIL BEAST!</div>
+      <div class=item-order>
+        <span>BUY! <input price="8.99" class=hammer-buy type=checkbox></input></span>
+      </div>
+    </div>
+    <div class=item>
+      <img src=../img/hammer-3.jpg>
+      <div class=item-label>$6.99 YELLOW!</div>
+      <div class=item-order>
+        <span>BUY! <input price="6.99" class=hammer-buy type=checkbox></input></span>
+      </div>
+    </div>
+  </div>
+  <iframe id=cashbomb src=../cashbomb.html></iframe>
+  <div id=freebeer-container><div id=freebeer></div><div id=show-hide>show/hide</div></div>
+<span id=response style="color:white">.</span>
+</div>
 
-<div id=response></div>
+<p id="enable-status"></p>
 
 <script>
-(function() {
+let cashbomb = document.getElementById('cashbomb');
+cashbomb.addEventListener('load', evt => {
+  function updateCashRequest() {
+    let dollars = 0;
+    document.querySelectorAll('.hammer-buy').forEach(el => {
+      if (el.checked)
+        dollars += Number(el.getAttribute('price'));
+    });
+    let data = {
+      requester: 'BuyHammerz!',
+      requestedDollars: dollars
+    };
+    cashbomb.contentWindow.postMessage(data, "*");
+  }
+
   function handleMessage(evt) {
     let el = document.getElementById('response');
+    el.style.color = "";
     if (evt.data['status'] == 'accept') {
       el.textContent = "Payment received for $" + evt.data['dollars'] + ".";
     } else {
@@ -26,15 +84,37 @@
     }
   }
 
-  window.addEventListener('message', handleMessage);
-
-})();
-
-let cashbomb = document.getElementById('cashbomb');
-cashbomb.addEventListener('load', evt => {
+  let enabled = false;
   evt.target.contentWindow.postMessage({
-    requester: "BadGuyz",
-    requestedDollars: 1000000
-  }, "*");
+    setEnabled: enabled
+  });
+
+  let enableStatus = document.getElementById('enable-status');
+  enableStatus.addEventListener('click', evt => {
+    enabled = !enabled;
+    if (enabled)
+      enableStatus.classList.add('enabled');
+    else
+      enableStatus.classList.remove('enabled');
+    cashbomb.contentWindow.postMessage({
+      setEnabled: enabled
+    }, "*");
+  });
+
+  let showHide = document.getElementById('show-hide');
+  showHide.addEventListener('click', evt=> {
+    let left = getComputedStyle(evt.target.parentElement).left;
+    if (left == "480px") {
+      evt.target.parentElement.style.left = "780px";
+    } else {
+      evt.target.parentElement.style.left = "480px";
+    }
+  });
+
+  document.querySelectorAll('.hammer-buy').forEach(el => {
+    el.addEventListener('change', updateCashRequest)
+  });
+
+  window.addEventListener('message', handleMessage);
 });
 </script>

@@ -1,13 +1,58 @@
+.top {
+  width: 780px;
+  padding: 0 10px;
+}
+.banner {
+  font-size: 48px;
+  text-align: center;
+}
+.item-container {
+  display: flex;
+  flex-direction: column;
+  font-size: 36px;
+}
+.item {
+  margin: 10px 0;
+  display: grid;
+  grid-template-columns: 150px 2fr 0.5fr;
+}
+.item > img {
+  width: 150px;
+}
+.item > div {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.item-order {
+  justify-self: end;
+}
 iframe {
   border: none;
 }
-.button {
+#enable-status {
+  position: fixed;
+  bottom: 0px;
+  font-size: 36px;
+  display: inline-block;
+  background-color: red;
+}
+#enable-status::after {
+  content: "Click-jacking prevention disabled.";
+}
+#enable-status.enabled {
+  background-color: green;
+}
+#enable-status.enabled::after {
+  content: "Click-jacking prevention enabled.";
+}
+#freebeer {
+  pointer-events: none;
   border-radius: 30px;
   border: 2px outset gray;
   width: 296px;
   height: 146px;
-}
-#freebeer {
   background-image: url(img/beer.png);
   background-color: white;
   background-size: contain;
@@ -35,7 +80,6 @@ iframe {
   display: inline-block;
   font-size: 36px;
   text-align: center;
-  border: 1px solid black;
 }
 @keyframes blink {
   0% {
