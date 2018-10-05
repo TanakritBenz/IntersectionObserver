@@ -28,6 +28,10 @@
 .item-order {
   justify-self: end;
 }
+input {
+  width: 20px;
+  height: 20px;
+}
 iframe {
   border: none;
 }
@@ -46,6 +50,19 @@ iframe {
 }
 #enable-status.enabled::after {
   content: "Click-jacking prevention enabled.";
+}
+#show-hide {
+  color: lightgray;
+  font-size: 36px;
+  align-self: center;
+  margin-left: 10px;
+}
+#transition-container {
+  position: relative;
+  left: 480px;
+  transition-property: left;
+  transition-duration: 2s;
+  display: flex;
 }
 #freebeer {
   pointer-events: none;
