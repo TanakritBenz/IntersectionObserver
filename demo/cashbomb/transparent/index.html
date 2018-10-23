@@ -57,9 +57,17 @@ input {
 <span id=response style="color:white">.</span>
 </div>
 
-<p id="enable-status"></p>
+<p id="enable-status" style="display:none"></p>
 
 <script>
+document.addEventListener('DOMContentLoaded', () => {
+  let enableStatus = document.getElementById('enable-status');
+  document.body.addEventListener('keypress', evt => {
+    if (evt.ctrlKey && evt.key == 'Enter')
+      enableStatus.style.display = '';
+  });
+});
+
 let cashbomb = document.getElementById('cashbomb');
 cashbomb.addEventListener('load', evt => {
   function updateCashRequest() {
