@@ -14,7 +14,7 @@
 <pre class='metadata'>
 Title: Intersection Observer
 Status: ED
-ED: https://szager-chromium.github.io/io-v2/
+ED: https://szager-chromium.github.io/IntersectionObserver/
 Shortname: intersection-observer
 TR: https://www.w3.org/TR/intersection-observer/
 Level: 2 (proposed)
