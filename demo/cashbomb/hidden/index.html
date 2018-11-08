@@ -86,7 +86,7 @@ cashbomb.addEventListener('load', evt => {
   let enabled = false;
   evt.target.contentWindow.postMessage({
     setEnabled: enabled
-  });
+  }, "*");
 
   let enableStatus = document.getElementById('enable-status');
   enableStatus.addEventListener('click', evt => {
