@@ -47,17 +47,9 @@ input {
 <span id=response style="color:white">.</span>
 </div>
 
-<p id="enable-status" style="display:none"></p>
+<p id="enable-status"></p>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  let enableStatus = document.getElementById('enable-status');
-  document.body.addEventListener('keypress', evt => {
-    if (evt.ctrlKey && evt.key == 'Enter')
-      enableStatus.style.display = '';
-  });
-});
-  
 let cashbomb = document.getElementById('cashbomb');
 cashbomb.addEventListener('load', evt => {
   function updateCashRequest() {
@@ -90,7 +82,7 @@ cashbomb.addEventListener('load', evt => {
 
   let enableStatus = document.getElementById('enable-status');
   enableStatus.addEventListener('click', evt => {
-    enabled = !enabled;
+    enabled = !enabled && self.IntersectionObserverEntry && IntersectionObserverEntry.prototype.hasOwnProperty('isVisible');
     if (enabled)
       enableStatus.classList.add('enabled');
     else

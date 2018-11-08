@@ -82,7 +82,7 @@ html, body {
 </div>
 
 <script>
-var visibilityCheckingEnabled = true;
+var visibilityCheckingEnabled = self.IntersectionObserverEntry && IntersectionObserverEntry.prototype.hasOwnProperty('isVisible');
 
 var requesterWindow;
 var requesterName = "";
