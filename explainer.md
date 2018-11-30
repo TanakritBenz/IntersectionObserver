@@ -55,7 +55,7 @@ click event.
 ```js
 // This is code running in the iframe.
 
-// The button must be visible for at least 800ms prior to an input event
+// The iframe must be visible for at least 800ms prior to an input event
 // for the input event to be considered valid.
 const minimumVisibleDuration = 800;
 
