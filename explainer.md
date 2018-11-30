@@ -25,3 +25,68 @@ There are two key aspects that make IntersectionObserver V2 a powerful tool for 
 * Because the IntersectionObserver code can run in the context of the iframe, it does not rely on the embedding context -- which may be malicious -- for anything. The iframe only needs to trust the browser implementation. V2 puts all of the power into the hands of the iframe.
     
 * Most current strategies for combatting UI redress attacks consist of crawling the web and scanning the rendered content of pages. Typically, this requires lots of computing power and sophisticated analyses. At best, such techniques will identify and black-list fraudulent sites, but only after they have been live on the web for some time, and likely defrauded some number of users. By contrast, IntersectionObserver V2 makes it possible to detect and **stop fraud before it occurs**, with code running entirely on the client.
+
+## Implementation Considerations
+
+There are two chief concerns:
+
+ 1. An implementation must *never* return a false positive (i.e., report a target as visible when it isn't). That is a non-negotiable requirement for V2 to be useful in security applications. Because the spec permits false negatives, and provides only a simple boolean signal, implementations have some flexibility in choosing how complex or costly their algorithm is.
+ 
+ 2. For most implementations, determining occlusion by examining rasterized content (e.g., by reading back pixels from the GPU) is far too costly to be practical. It should, however, be possible for an implementation to leverage its existing support for hit testing -- in response to mouse or touch input, or to support elementFromPoint() -- to implement IntersectionObserver V2.
+
+## Alternatives Considered
+
+A prior [proposal](https://www.w3.org/TR/UISecurity/) for addressing UI Redress and Clickjacking attacks was rejected, primarily for its invasiveness (it requires the UA to modify page rendering, and is very prescriptive about the browser-internal mechanism).
+
+We considered various ideas for reporting more granular and detailed information than a simple boolean flag (e.g., reporting a target's unoccluded area as a percentage of its total area). These were rejected as being too costly to implement accurately in most browsers, and also potentially offering a surface for attack (e.g., corner-radius or text-shadow).
+
+## Sample Usage
+
+Here's how a cross-origin iframe might verify that its content has been visible,
+unoccluded, and unaltered for some minimum amount of time prior to receiving a
+click event.
+
+```html
+<!DOCTYPE html>
+<!-- This is the iframe document. -->
+<button id="payButton" onclick="payButtonClicked()">Pay Money Now</button>
+```
+
+```js
+// This is code running in the iframe.
+
+// The button must be visible for at least 800ms prior to an input event
+// for the input event to be considered valid.
+const minimumVisibleDuration = 800;
+
+// Keep track of when the button transitioned to a visible state.
+let visibleSince = 0;
+
+let button = document.getElementById('payButton');
+payButton.addEventListener('click', event => {
+  if (visibleSince && performance.now() - visibleSince >= minimumVisibleDuation) {
+    acceptClick();
+  } else {
+    rejectClick();
+  }
+});
+
+let observer = new IntersectionObserver(
+  changes => {
+    changes.forEach(change => {
+      if (change.isIntersecting && change.isVisible) {
+        visibleSince = change.time;
+      } else {
+        visibleSince = 0;
+      }
+    });
+  },
+  { threshold: [1.0],
+    trackVisibility: true,
+    delay: 100
+  });
+);
+
+// Require that the entire iframe be visible.
+observer.observe(document.scrollingElement);
+```
