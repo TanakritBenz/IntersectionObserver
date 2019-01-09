@@ -1213,9 +1213,9 @@ Possible extra rowspan handling
 	}
 </style>
   <link href="https://www.w3.org/StyleSheets/TR/2016/W3C-ED" rel="stylesheet" type="text/css">
-  <meta content="Bikeshed version d26e6571539988890b7a19f78f0edc11e433134d" name="generator">
+  <meta content="Bikeshed version a7eb117d9f108f9136cef7c0d9f34b0bb19f0287" name="generator">
   <link href="https://www.w3.org/TR/intersection-observer/" rel="canonical">
-  <meta content="e1820455251ae7be149d9241dd9b7de3ba396cf2" name="document-revision">
+  <meta content="996ac3d9a48cd9f66dda6eeab86d4b64e925fb20" name="document-revision">
 <style>
 .proposed {
   background-color:pink;
@@ -1470,7 +1470,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Intersection Observer</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-11-05">5 November 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-01-08">8 January 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1490,7 +1490,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
    <div data-fill-with="warning">
     <p class="proposed" style="padding: 5px; border:1px solid black; font-size:x-large; font-weight:bold;">This is a proposed V2 iteration of the IntersectionObserver spec.  This background color identifies the proposed changes from V1.</p>
    </div>
-   <p class="copyright" data-fill-with="copyright"><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2018 <a href="http://www.w3.org/"><abbr title="World Wide Web Consortium">W3C</abbr></a><sup>®</sup> (<a href="http://www.csail.mit.edu/"><abbr title="Massachusetts Institute of Technology">MIT</abbr></a>, <a href="http://www.ercim.eu/"><abbr title="European Research Consortium for Informatics and Mathematics">ERCIM</abbr></a>, <a href="http://www.keio.ac.jp/">Keio</a>, <a href="http://ev.buaa.edu.cn/">Beihang</a>). W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="http://www.w3.org/Consortium/Legal/2015/copyright-software-and-document" rel="license">permissive document license</a> rules apply. </p>
+   <p class="copyright" data-fill-with="copyright"><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2019 <a href="http://www.w3.org/"><abbr title="World Wide Web Consortium">W3C</abbr></a><sup>®</sup> (<a href="http://www.csail.mit.edu/"><abbr title="Massachusetts Institute of Technology">MIT</abbr></a>, <a href="http://www.ercim.eu/"><abbr title="European Research Consortium for Informatics and Mathematics">ERCIM</abbr></a>, <a href="http://www.keio.ac.jp/">Keio</a>, <a href="http://ev.buaa.edu.cn/">Beihang</a>). W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="http://www.w3.org/Consortium/Legal/2015/copyright-software-and-document" rel="license">permissive document license</a> rules apply. </p>
    <hr title="Separator for header">
   </div>
   <div class="p-summary" data-fill-with="abstract">
@@ -2133,13 +2133,16 @@ Otherwise, update <var>container</var> to be the <a data-link-type="dfn" href="h
       <p>If the <a data-link-type="dfn" href="#intersectionobserver-target" id="ref-for-intersectionobserver-target①⑥">target</a>, or any element in its <a data-link-type="dfn" href="https://drafts.csswg.org/css-display/#containing-block-chain" id="ref-for-containing-block-chain②">containing block chain</a>, has any filters applied, return <code>false</code>.</p>
      <li data-md>
       <p>If the implementation cannot guarantee that the <a data-link-type="dfn" href="#intersectionobserver-target" id="ref-for-intersectionobserver-target①⑦">target</a> is completely unoccluded by other page content, return <code>false</code>.</p>
+    </ol>
+    <p class="note" role="note"><span>Note:</span> Implementations should use the <a data-link-type="dfn" href="https://drafts.csswg.org/css-overflow-3/#ink-overflow-rectangle" id="ref-for-ink-overflow-rectangle">ink overflow rectangle</a> of page content when determining whether a <a data-link-type="dfn" href="#intersectionobserver-target" id="ref-for-intersectionobserver-target①⑧">target</a> is occluded. For <a data-link-type="dfn" href="https://drafts.csswg.org/css-backgrounds/#shadow-blur" id="ref-for-shadow-blur">blur</a> effects, which have theoretically infinite extent, the recommended working definition of the <a data-link-type="dfn" href="https://drafts.csswg.org/css-overflow-3/#ink-overflow-region" id="ref-for-ink-overflow-region">ink overflow region</a> is the extent of the standard box blur approximation of a Gaussian filter, i.e., <code>(3 * sqrt(2 * π) / 4) * (standard deviation)</code>.</p>
+    <ol start="6">
      <li data-md>
       <p>Return <code>true</code>.</p>
     </ol>
    </div>
    <div class="proposed">
-    <h4 class="heading settled" data-level="3.2.6" id="calculate-effective-transformation-matrix"><span class="secno">3.2.6. </span><span class="content">Calculate a <a data-link-type="dfn" href="#intersectionobserver-target" id="ref-for-intersectionobserver-target①⑧">target</a>’s Effective Transformation Matrix</span><a class="self-link" href="#calculate-effective-transformation-matrix"></a></h4>
-     To compute the <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="effective-transformation-matrix">effective transformation matrix</dfn> of a <a data-link-type="dfn" href="#intersectionobserver-target" id="ref-for-intersectionobserver-target①⑨">target</a>, run these steps: 
+    <h4 class="heading settled" data-level="3.2.6" id="calculate-effective-transformation-matrix"><span class="secno">3.2.6. </span><span class="content">Calculate a <a data-link-type="dfn" href="#intersectionobserver-target" id="ref-for-intersectionobserver-target①⑨">target</a>’s Effective Transformation Matrix</span><a class="self-link" href="#calculate-effective-transformation-matrix"></a></h4>
+     To compute the <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="effective-transformation-matrix">effective transformation matrix</dfn> of a <a data-link-type="dfn" href="#intersectionobserver-target" id="ref-for-intersectionobserver-target②⓪">target</a>, run these steps: 
     <ol>
      <li data-md>
       <p>Let <var>matrix</var> be the <a data-link-type="dfn" href="https://drafts.csswg.org/css-transforms-1/#serialization-of-the-computed-value" id="ref-for-serialization-of-the-computed-value">serialization</a> of the <a data-link-type="dfn" href="https://drafts.csswg.org/css-transforms-1/#identity-transform-function" id="ref-for-identity-transform-function">identity transform function</a>.</p>
@@ -2608,7 +2611,7 @@ The IntersectionObserverInit dictionary</a> <a href="#ref-for-idl-long③">(2)</
    <dt id="biblio-css-syntax-3">[CSS-SYNTAX-3]
    <dd>Tab Atkins Jr.; Simon Sapin. <a href="https://www.w3.org/TR/css-syntax-3/">CSS Syntax Module Level 3</a>. 20 February 2014. CR. URL: <a href="https://www.w3.org/TR/css-syntax-3/">https://www.w3.org/TR/css-syntax-3/</a>
    <dt id="biblio-css-values-3">[CSS-VALUES-3]
-   <dd>Tab Atkins Jr.; Elika Etemad. <a href="https://www.w3.org/TR/css-values-3/">CSS Values and Units Module Level 3</a>. 29 September 2016. CR. URL: <a href="https://www.w3.org/TR/css-values-3/">https://www.w3.org/TR/css-values-3/</a>
+   <dd>Tab Atkins Jr.; Elika Etemad. <a href="https://www.w3.org/TR/css-values-3/">CSS Values and Units Module Level 3</a>. 14 August 2018. CR. URL: <a href="https://www.w3.org/TR/css-values-3/">https://www.w3.org/TR/css-values-3/</a>
    <dt id="biblio-cssom-view-1">[CSSOM-VIEW-1]
    <dd>Simon Pieters. <a href="https://www.w3.org/TR/cssom-view-1/">CSSOM View Module</a>. 17 March 2016. WD. URL: <a href="https://www.w3.org/TR/cssom-view-1/">https://www.w3.org/TR/cssom-view-1/</a>
    <dt id="biblio-dom">[DOM]
@@ -2690,8 +2693,8 @@ The IntersectionObserverInit dictionary</a>
     <li><a href="#ref-for-intersectionobserver-target⑨">3.2.4. 
 Compute the Intersection of a Target Element and the Root</a> <a href="#ref-for-intersectionobserver-target①⓪">(2)</a> <a href="#ref-for-intersectionobserver-target①①">(3)</a> <a href="#ref-for-intersectionobserver-target①②">(4)</a>
     <li><a href="#ref-for-intersectionobserver-target①③">3.2.5. 
-	Compute whether a Target is unoccluded, untransformed, unfiltered, and opaque.</a> <a href="#ref-for-intersectionobserver-target①④">(2)</a> <a href="#ref-for-intersectionobserver-target①⑤">(3)</a> <a href="#ref-for-intersectionobserver-target①⑥">(4)</a> <a href="#ref-for-intersectionobserver-target①⑦">(5)</a>
-    <li><a href="#ref-for-intersectionobserver-target①⑧">3.2.6. Calculate a target’s Effective Transformation Matrix</a> <a href="#ref-for-intersectionobserver-target①⑨">(2)</a>
+	Compute whether a Target is unoccluded, untransformed, unfiltered, and opaque.</a> <a href="#ref-for-intersectionobserver-target①④">(2)</a> <a href="#ref-for-intersectionobserver-target①⑤">(3)</a> <a href="#ref-for-intersectionobserver-target①⑥">(4)</a> <a href="#ref-for-intersectionobserver-target①⑦">(5)</a> <a href="#ref-for-intersectionobserver-target①⑧">(6)</a>
+    <li><a href="#ref-for-intersectionobserver-target①⑨">3.2.6. Calculate a target’s Effective Transformation Matrix</a> <a href="#ref-for-intersectionobserver-target②⓪">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="callbackdef-intersectionobservercallback">

@@ -62,6 +62,9 @@ urlPrefix: https://heycam.github.io/webidl/
 	urlPrefix: #dfn-; type:dfn; text: throw
 	urlPrefix: #idl-; type:interface; text: double
 	url: #hierarchyrequesterror; type: exception; text: HierarchyRequestError
+urlPrefix: https://drafts.csswg.org/css-backgrounds/
+	url: #shadow-blur; type:dfn; text: blur
+	url: #blur-radius; type:dfn; text: blur radius
 urlPrefix: https://drafts.csswg.org/css-box/
 	url: #viewport; type: dfn; text: viewport
 	url: #containing-block; type: dfn; text: containing block
@@ -70,6 +73,9 @@ urlPrefix: https://drafts.csswg.org/css-display/
 	url: #containing-block-chain; type: dfn; text: containing block chain
 urlPrefix: http://www.w3.org/TR/css-masking-1/
 	url: #propdef-clip-path; type:dfn; text: clip-path
+urlPrefix: https://drafts.csswg.org/css-overflow-3/
+	url: #ink-overflow-rectangle; type:dfn; text: ink overflow rectangle
+	url: #ink-overflow-region; type:dfn; text: ink overflow region
 urlPrefix: https://drafts.csswg.org/cssom-view-1/
 	url: #pinch-zoom; type:dfn; text: pinch zoom
 urlPrefix: https://drafts.csswg.org/css-transforms-1/
@@ -661,6 +667,9 @@ run these steps:
 	3. If the <a>target</a>, or any element in its <a>containing block chain</a>, has an effective opacity other than 100%, return <code>false</code>.
 	4. If the <a>target</a>, or any element in its <a>containing block chain</a>, has any filters applied, return <code>false</code>.
 	5. If the implementation cannot guarantee that the <a>target</a> is completely unoccluded by other page content, return <code>false</code>.
+
+	Note: Implementations should use the <a>ink overflow rectangle</a> of page content when determining whether a <a>target</a> is occluded. For <a>blur</a> effects, which have theoretically infinite extent, the recommended working definition of the <a>ink overflow region</a> is the extent of the standard box blur approximation of a Gaussian filter, i.e., <code>(3 * sqrt(2 * &pi;) / 4) * (standard deviation)</code>.
+
 	6. Return <code>true</code>.
 </div>
 
