@@ -668,7 +668,7 @@ run these steps:
 	4. If the <a>target</a>, or any element in its <a>containing block chain</a>, has any filters applied, return <code>false</code>.
 	5. If the implementation cannot guarantee that the <a>target</a> is completely unoccluded by other page content, return <code>false</code>.
 
-	Note: Implementations should use the <a>ink overflow rectangle</a> of page content when determining whether a <a>target</a> is occluded. For <a>blur</a> effects, which have theoretically infinite extent, the recommended working definition of the <a>ink overflow region</a> is the extent of the standard box blur approximation of a Gaussian filter, i.e., <code>(3 * sqrt(2 * &pi;) / 4) * (standard deviation)</code>.
+	Note: Implementations should use the <a>ink overflow rectangle</a> of page content when determining whether a <a>target</a> is occluded. For <a>blur</a> effects, which have theoretically infinite extent, the recommended working definition of the <a>ink overflow region</a> is the extent of the standard triple box blur approximation of a Gaussian filter, i.e., <code>((3 * sqrt(2 * &pi;) / 4) * &sigma;)</code>.
 
 	6. Return <code>true</code>.
 </div>

@@ -1215,7 +1215,7 @@ Possible extra rowspan handling
   <link href="https://www.w3.org/StyleSheets/TR/2016/W3C-ED" rel="stylesheet" type="text/css">
   <meta content="Bikeshed version a7eb117d9f108f9136cef7c0d9f34b0bb19f0287" name="generator">
   <link href="https://www.w3.org/TR/intersection-observer/" rel="canonical">
-  <meta content="996ac3d9a48cd9f66dda6eeab86d4b64e925fb20" name="document-revision">
+  <meta content="1c1a733e484ba0827c75ea502a637e8ce0a85b3e" name="document-revision">
 <style>
 .proposed {
   background-color:pink;
@@ -1470,7 +1470,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Intersection Observer</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-01-08">8 January 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-01-10">10 January 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -2134,7 +2134,7 @@ Otherwise, update <var>container</var> to be the <a data-link-type="dfn" href="h
      <li data-md>
       <p>If the implementation cannot guarantee that the <a data-link-type="dfn" href="#intersectionobserver-target" id="ref-for-intersectionobserver-target①⑦">target</a> is completely unoccluded by other page content, return <code>false</code>.</p>
     </ol>
-    <p class="note" role="note"><span>Note:</span> Implementations should use the <a data-link-type="dfn" href="https://drafts.csswg.org/css-overflow-3/#ink-overflow-rectangle" id="ref-for-ink-overflow-rectangle">ink overflow rectangle</a> of page content when determining whether a <a data-link-type="dfn" href="#intersectionobserver-target" id="ref-for-intersectionobserver-target①⑧">target</a> is occluded. For <a data-link-type="dfn" href="https://drafts.csswg.org/css-backgrounds/#shadow-blur" id="ref-for-shadow-blur">blur</a> effects, which have theoretically infinite extent, the recommended working definition of the <a data-link-type="dfn" href="https://drafts.csswg.org/css-overflow-3/#ink-overflow-region" id="ref-for-ink-overflow-region">ink overflow region</a> is the extent of the standard box blur approximation of a Gaussian filter, i.e., <code>(3 * sqrt(2 * π) / 4) * (standard deviation)</code>.</p>
+    <p class="note" role="note"><span>Note:</span> Implementations should use the <a data-link-type="dfn" href="https://drafts.csswg.org/css-overflow-3/#ink-overflow-rectangle" id="ref-for-ink-overflow-rectangle">ink overflow rectangle</a> of page content when determining whether a <a data-link-type="dfn" href="#intersectionobserver-target" id="ref-for-intersectionobserver-target①⑧">target</a> is occluded. For <a data-link-type="dfn" href="https://drafts.csswg.org/css-backgrounds/#shadow-blur" id="ref-for-shadow-blur">blur</a> effects, which have theoretically infinite extent, the recommended working definition of the <a data-link-type="dfn" href="https://drafts.csswg.org/css-overflow-3/#ink-overflow-region" id="ref-for-ink-overflow-region">ink overflow region</a> is the extent of the standard triple box blur approximation of a Gaussian filter, i.e., <code>((3 * sqrt(2 * π) / 4) * σ)</code>.</p>
     <ol start="6">
      <li data-md>
       <p>Return <code>true</code>.</p>
