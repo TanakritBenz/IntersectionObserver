@@ -1,42 +1,50 @@
 <!DOCTYPE html>
 <style>
-html, body {
-  margin: 0;
-  font-size: 36px;
-}
-.svg100 {
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  opacity: 0.5;
-}
-.animated {
-  will-change: transform;
-  transition-property: transform;
-  transition-timing-function: linear;
-}
-.target {
-  width: 200px;
-  position: absolute;
-  left: calc(50% - 100px);
-  top: calc(50% - 20px);
-  border: 2px solid black;
-  text-align: center;
-  background-color: green;
-}
-.target::after {
-  content: "not occluded";
-}
-.target.occluded {
-  background-color: red;
-}
-.target.occluded::after {
-  content: "occluded";
-}
-#forcer {
-  color: white;
-  position: absolute;
-}
+  html,
+  body {
+    margin: 0;
+    font-size: 36px;
+  }
+
+  .svg100 {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    opacity: 0.5;
+  }
+
+  .animated {
+    will-change: transform;
+    transition-property: transform;
+    transition-timing-function: linear;
+  }
+
+  .target {
+    width: 200px;
+    position: absolute;
+    left: calc(50% - 100px);
+    top: calc(50% - 20px);
+    border: 2px solid black;
+    text-align: center;
+    background-color: green;
+  }
+
+  .target::after {
+    content: "not occluded";
+  }
+
+  .target.occluded {
+    background-color: red;
+  }
+
+  .target.occluded::after {
+    content: "occluded";
+  }
+
+  #forcer {
+    color: white;
+    position: absolute;
+  }
 </style>
 
 <div id=forcer>o</div>
@@ -69,127 +77,133 @@ html, body {
 </svg>
 
 <script>
-let SPEED = 300;
-let RUNNING = false;
-let FORCE_MARGIN = 0;
-let FORCER = document.getElementById('forcer');
+  let SPEED = 300;
+  let RUNNING = false;
+  let FORCE_MARGIN = 0;
+  let FORCER = document.getElementById('forcer');
 
-function force_frame() {
-  FORCE_MARGIN = (FORCE_MARGIN + 1) % 100;
-  FORCER.style.left = String(FORCE_MARGIN) + "px";
-  if (RUNNING)
-    requestAnimationFrame(force_frame);
-}
-
-function animate(el) {
-  if (!RUNNING)
-    return;
-  let x = Number(el.getAttribute('x1') || 0);
-  let y = Number(el.getAttribute('y1') || 0);
-  let dx = el.hasAttribute('dx') ? Number(el.getAttribute('dx')) : 2;
-  let dy = el.hasAttribute('dy') ? Number(el.getAttribute('dy')) : 1;
-  let maxX = window.innerWidth - 100;
-  let maxY = window.innerHeight - 100;
-  if (x == maxX)
-    dx = -Math.abs(dx);
-  else if (x == 0)
-    dx = Math.abs(dx);
-  if (y == maxY)
-    dy = -Math.abs(dy);
-  else if (y == 0)
-    dy = Math.abs(dy);
-  let xTicks = dx < 0 ? -x / dx : (maxX - x) / dx;
-  let yTicks = dy < 0 ? -y / dy : (maxY - y) / dy;
-  let finalX, finalY;
-  if (xTicks > yTicks) {
-    finalX = Math.max(0, Math.min(maxX, x + (yTicks * dx)));
-    finalY = dy > 0 ? maxY : 0;
-  } else {
-    finalX = dx > 0 ? maxX : 0;
-    finalY = Math.max(0, Math.min(maxY, y + (xTicks * dy)));
+  function force_frame() {
+    FORCE_MARGIN = (FORCE_MARGIN + 1) % 100;
+    FORCER.style.left = String(FORCE_MARGIN) + "px";
+    if (RUNNING)
+      requestAnimationFrame(force_frame);
   }
-  let matrix = "matrix(" + [1, 0, 0, 1, finalX, finalY].join(", ") + ")";
-  el.style.transform = matrix;
-  let distance = Math.sqrt(Math.pow(finalX - x, 2) + Math.pow(finalY - y, 2));
-  el.style.transitionDuration = (distance / SPEED).toPrecision(5) + "s";
-  el.setAttribute('x1', finalX);
-  el.setAttribute('y1', finalY);
-  el.setAttribute('dx', dx);
-  el.setAttribute('dy', dy);
-}
 
-function start() {
-  if (RUNNING)
-    return;
-  RUNNING = true;
-  requestAnimationFrame(force_frame);
-  document.querySelectorAll('.animated').forEach((el) => {
-    let x, y, dx, dy;
-    if (el.style.transform == "") {
-      x = Math.random() * (window.innerWidth - 100);
-      y = Math.random() * (window.innerHeight - 100);
-      el.style.transform = "matrix(" + [1, 0, 0, 1, x, y].join(", ") + ")";
+  function animate(el) {
+    if (!RUNNING)
+      return;
+    let x = Number(el.getAttribute('x1') || 0);
+    let y = Number(el.getAttribute('y1') || 0);
+    let dx = el.hasAttribute('dx') ? Number(el.getAttribute('dx')) : 2;
+    let dy = el.hasAttribute('dy') ? Number(el.getAttribute('dy')) : 1;
+    let maxX = window.innerWidth - 100;
+    let maxY = window.innerHeight - 100;
+    if (x == maxX)
+      dx = -Math.abs(dx);
+    else if (x == 0)
+      dx = Math.abs(dx);
+    if (y == maxY)
+      dy = -Math.abs(dy);
+    else if (y == 0)
+      dy = Math.abs(dy);
+    let xTicks = dx < 0 ? -x / dx : (maxX - x) / dx;
+    let yTicks = dy < 0 ? -y / dy : (maxY - y) / dy;
+    let finalX, finalY;
+    if (xTicks > yTicks) {
+      finalX = Math.max(0, Math.min(maxX, x + (yTicks * dx)));
+      finalY = dy > 0 ? maxY : 0;
     } else {
-      let transform = getComputedStyle(el).transform.slice(7, -1).split(", ");
-      x = transform[4];
-      y = transform[5];
+      finalX = dx > 0 ? maxX : 0;
+      finalY = Math.max(0, Math.min(maxY, y + (xTicks * dy)));
     }
-    el.setAttribute('x1', x);
-    el.setAttribute('y1', y);
-    if (el.hasAttribute("dx")) {
-      dx = Number(el.getAttribute("dx"));
-      dy = Number(el.getAttribute("dy"));
-    } else {
-      dx = (Math.round(Math.random() * 5) + 1) * (Math.random() > 0.5 ? 1 : -1);
-      dy = (Math.round(Math.random() * 5) + 1) * (Math.random() > 0.5 ? 1 : -1);
-      el.setAttribute("dx", dx);
-      el.setAttribute("dy", dy);
-    }
-  });
+    let matrix = "matrix(" + [1, 0, 0, 1, finalX, finalY].join(", ") + ")";
+    el.style.transform = matrix;
+    let distance = Math.sqrt(Math.pow(finalX - x, 2) + Math.pow(finalY - y, 2));
+    el.style.transitionDuration = (distance / SPEED).toPrecision(5) + "s";
+    el.setAttribute('x1', finalX);
+    el.setAttribute('y1', finalY);
+    el.setAttribute('dx', dx);
+    el.setAttribute('dy', dy);
+  }
 
-  requestAnimationFrame(() => {
-    document.querySelectorAll('.animated').forEach(animate);
-  });
-}
+  function start() {
+    if (RUNNING)
+      return;
+    RUNNING = true;
+    requestAnimationFrame(force_frame);
+    document.querySelectorAll('.animated').forEach((el) => {
+      let x, y, dx, dy;
+      if (el.style.transform == "") {
+        x = Math.random() * (window.innerWidth - 100);
+        y = Math.random() * (window.innerHeight - 100);
+        el.style.transform = "matrix(" + [1, 0, 0, 1, x, y].join(", ") + ")";
+      } else {
+        let transform = getComputedStyle(el).transform.slice(7, -1).split(", ");
+        x = transform[4];
+        y = transform[5];
+      }
+      el.setAttribute('x1', x);
+      el.setAttribute('y1', y);
+      if (el.hasAttribute("dx")) {
+        dx = Number(el.getAttribute("dx"));
+        dy = Number(el.getAttribute("dy"));
+      } else {
+        dx = (Math.round(Math.random() * 5) + 1) * (Math.random() > 0.5 ? 1 : -1);
+        dy = (Math.round(Math.random() * 5) + 1) * (Math.random() > 0.5 ? 1 : -1);
+        el.setAttribute("dx", dx);
+        el.setAttribute("dy", dy);
+      }
+    });
 
-function stop() {
-  RUNNING = false;
-  document.querySelectorAll('.animated').forEach((el) => {
-    if (el.style.transform != "")
-      el.style.transform = getComputedStyle(el).transform;
-  });
-}
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.animated').forEach(animate);
+    });
+  }
 
-function toggle() {
-  if (RUNNING)
-    stop();
-  else
-    start();
-}
+  function stop() {
+    RUNNING = false;
+    document.querySelectorAll('.animated').forEach((el) => {
+      if (el.style.transform != "")
+        el.style.transform = getComputedStyle(el).transform;
+    });
+  }
 
-document.querySelectorAll('.target').forEach((el) => {
-  new IntersectionObserver((entries) => {
-    let e = entries.pop();
-    if (e.isVisible) {
-      e.target.classList.remove('occluded');
-    } else {
-      e.target.classList.add('occluded');
-    }
-  }, { trackVisibility: true, delay:100 }).observe(el);
-});
-
-document.querySelectorAll('.animated').forEach((el) => {
-  el.addEventListener('transitionend', (evt) => { animate(evt.target) }, true);
-});
-
-document.addEventListener('keypress', (event) => {
-  if (event.key == ' ') {
+  function toggle() {
     if (RUNNING)
       stop();
     else
       start();
   }
-});
 
-start();
+  document.querySelectorAll('.target').forEach((el) => {
+    new IntersectionObserver((entries) => {
+      let e = entries.pop();
+      if (typeof e.isVisible === 'undefined') {
+        // The browser doesn't support Intersection Observer v2, falling back to v1 behavior.
+        console.log('aaa')
+        change.isVisible = true;
+      } else if (e.isVisible) {
+        console.log('bbb')
+        e.target.classList.remove('occluded');
+      } else {
+        console.log('ccc')
+        e.target.classList.add('occluded');
+      }
+    }, { threshold: [0.5], trackVisibility: true, delay: 100 }).observe(el);
+  });
+
+  document.querySelectorAll('.animated').forEach((el) => {
+    el.addEventListener('transitionend', (evt) => { animate(evt.target) }, true);
+  });
+
+  document.addEventListener('keypress', (event) => {
+    if (event.key == ' ') {
+      if (RUNNING)
+        stop();
+      else
+        start();
+    }
+  });
+
+  start();
 </script>
